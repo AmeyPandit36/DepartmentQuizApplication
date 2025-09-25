@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Quiz Application</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<style>
+  :root{
+    --primary:#1e88e5;
+    --accent:#26a69a;
+    --bg:#f4f7fa;
+    --card:#fff;
+    --muted:#6b7280;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:Inter, system-ui, "Segoe UI", Roboto, Arial;
+    background:var(--bg); color:#111;
+  }
+  .page{display:none; padding:24px; max-width:1200px; margin:0 auto;}
+  .page.active{display:block}
+  header.app-header{display:flex;align-items:center;gap:12px;padding:18px 0}
+  header h1{margin:0;font-size:1.6rem;color:var(--primary)}
+  .subtle {color:var(--muted);font-size:.95rem}
+  .landing {display:flex;flex-direction:column;align-items:center;gap:18px;min-height:60vh;justify-content:center}
+  .role-row{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+  .role-card{
+    background:var(--card); border-radius:12px; padding:32px 48px; min-width:220px;
+    text-align:center; box-shadow:0 6px 20px rgba(30,30,30,.06); cursor:pointer;
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .role-card:hover{transform:translateY(-6px); box-shadow:0 12px 30px rgba(30,30,30,.09)}
+  .role-card h2{margin:0;color:var(--primary)}
+  .role-card p{margin:8px 0 0;color:var(--muted)}
+  .card {background:var(--card); padding:20px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,.06); max-width:720px; margin:14px auto}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .form-grid .full{grid-column:1/-1}
+  label{display:block;font-size:.9rem;margin-bottom:6px;color:#222}
+  input[type=text], input[type=email], input[type=password], input[type=tel], input[type=number], select, textarea{
+    width:100%; padding:10px;border:1px solid #ddd;border-radius:8px;font-size:1rem;
+  }
+  .form-actions{display:flex;gap:10px;align-items:center;margin-top:14px}
+  button.btn{background:var(--primary); color:white; padding:10px 14px;border:none;border-radius:8px;cursor:pointer}
+  button.ghost{background:transparent;border:1px solid #ddd;color:#333}
+  .link{color:var(--primary);cursor:pointer;text-decoration:underline;font-size:.95rem}
+  .dash-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+  .controls{display:flex;gap:10px;align-items:center}
+  .subject-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+  .subject-card{background:linear-gradient(180deg,#fff,#fbfdff);border-radius:12px;padding:14px;box-shadow:0 10px 28px rgba(0,0,0,.06);min-height:160px;display:flex;flex-direction:column;justify-content:space-between}
+  .subject-card h3{margin:0;color:var(--primary)}
+  .subject-meta{color:var(--muted);font-size:.9rem;margin-top:6px}
+  .subject-actions{display:flex;gap:8px;margin-top:10px;align-items:center}
+  .btn-sm{padding:8px 10px;border-radius:8px;font-size:.9rem}
+  .badge{background:#e6f2ff;color:var(--primary);padding:6px 8px;border-radius:8px;font-weight:600}
+  .module-list{display:flex;flex-direction:column;gap:10px;margin-top:12px}
+  .module-item{background:#fff;border-radius:8px;padding:10px;border:1px solid #eef2f6;display:flex;justify-content:space-between;align-items:center}
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:1000}
+  .modal{background:#fff;border-radius:12px;padding:18px;max-width:780px;width:95%;max-height:90vh;overflow:auto}
+  .q-card{background:#f9fafb;padding:12px;border-radius:10px;border:1px solid #eee;margin-bottom:12px}
+  .q-card textarea {min-height: 40px; font-size: 1rem; padding: 6px;}
+  .option-group{display:grid; grid-template-columns: auto 1fr; gap:8px; align-items:center; margin-top:8px;}
+  @media(max-width:720px){
+    .form-grid{grid-template-columns:1fr}
+    .role-card{padding:22px}
+    header h1{font-size:1.2rem}
+  }
+  .muted{color:var(--muted)}
+  .center{text-align:center}
+  .mt8{margin-top:8px}
+
+
+  /* Styles for the new admin stat cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+.stat-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+}
+.stat-card i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    opacity: 0.7;
+}
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+}
+
+/* --- Styles for Admin Search and Pagination --- */
+
+/* Style for the search input fields */
+#teacherSearch, #studentSearch {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+/* Add a subtle blue glow when the search box is focused */
+#teacherSearch:focus, #studentSearch:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2); /* Using your --primary color */
+    border-color: var(--primary);
+}
+
+/* Style for the pagination container */
+.pagination-controls {
+    display: flex;
+    justify-content: flex-end; /* Aligns items to the right */
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+/* Style for the disabled Previous/Next buttons */
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background-color: transparent;
+}
+</style>
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="app-header" style="max-width:1200px;margin:6px auto 0;padding:0 24px;">
+  <h1>Quiz Application</h1>
+  <div style="margin-left:auto" id="userBadge"></div>
+</header>
+
+<section id="landing" class="page active">
+  <div class="landing">
+    <div style="text-align:center">
+      <h2 style="margin:8px 0;color:var(--primary)">Welcome to Quiz Application</h2>
+      <p class="subtle">A seamless platform for educators and learners.</p>
+    </div>
+    <div class="role-row" style="margin-top:6vh">
+      <div class="role-card" id="openTeacher">
+        <h2>Teacher</h2>
+        <p class="muted">Create subjects, build quizzes, and track progress</p>
+      </div>
+      <div class="role-card" id="openAdmin">
+          <h2>Admin</h2>
+          <p class="muted">Manage teachers, students, and system settings</p>
+      </div>
+      <div class="role-card" id="openStudent">
+        <h2>Student</h2>
+        <p class="muted">Join subjects, attempt quizzes, and view scores</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="teacherAuth" class="page">
+  <div class="card">
+    <div style="display:flex;gap:14px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1">
+        <h3 style="margin:0;color:var(--primary)">Teacher Login</h3>
+        <div class="subtle">Sign in with your email and password</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <span class="link" id="t-back">Back</span>
+      </div>
+    </div>
+    <form id="teacherLoginForm" style="margin-top:14px">
+      <div class="form-grid">
+        <div class="full">
+          <label>Email</label>
+          <input id="t-login-email" type="email" required>
+        </div>
+        <div class="full">
+          <label>Password</label>
+          <input id="t-login-password" type="password" minlength="6" required>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" type="submit">Login</button>
+        <button class="ghost" type="button" id="t-forgot">Forgot Password</button>
+      </div>
+    </form>
+  </div>
+  </section>
+
+<section id="studentAuth" class="page">
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <h3 style="margin:0;color:var(--primary)">Student Login</h3>
+        <div class="subtle">Sign in with your email and password</div>
+      </div>
+      <div style="display:flex;gap:8px">
+        <span class="link" id="s-back">Back</span>
+      </div>
+    </div>
+    <form id="studentLoginForm" style="margin-top:14px">
+      <div class="form-grid">
+        <div class="full">
+          <label>Email</label>
+          <input id="s-login-email" type="email" required>
+        </div>
+        <div class="full">
+          <label>Password</label>
+          <input id="s-login-password" type="password" minlength="6" required>
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" type="submit">Login</button>
+        <button class="ghost" type="button" id="s-forgot">Forgot Password</button>
+      </div>
+    </form>
+  </div>
+    </section>
+
+<section id="adminAuth" class="page">
+    <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <h3 style="margin:0;color:var(--primary)">Admin Login</h3>
+                <div class="subtle">Sign in with your administrator credentials.</div>
+            </div>
+            <span class="link" id="admin-back">Back</span>
+        </div>
+        <form id="adminLoginForm" style="margin-top:14px">
+            <div class="form-grid">
+                <div class="full">
+                    <label>Email</label>
+                    <input id="admin-login-email" type="email" required value="admin@app.com">
+                </div>
+                <div class="full">
+                    <label>Password</label>
+                    <input id="admin-login-password" type="password" minlength="6" required value="admin123">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn" type="submit">Login as Admin</button>
+            </div>
+        </form>
+    </div>
+</section>
+<section id="teacherDash" class="page">
+  <div class="dash-header">
+    <div>
+      <h2 style="margin:0;color:var(--primary)">Teacher Dashboard</h2>
+      <div class="muted">Create and manage your subjects, modules, and quizzes.</div>
+    </div>
+    <div class="controls">
+      <span class="muted" id="teacherNameDisplay"></span>
+      <button class="btn" id="createSubjectBtn">+ Create Subject</button>
+      <button class="ghost" id="logoutTeacher">Logout</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin-top:0">Your Subjects</h3>
+    <div id="teacherSubjects" class="subject-grid mt8"></div>
+    <!-- <div id="noSubjects" class="muted center mt8" style="display:none">No subjects yet — create one to get started!</div> -->
+    <div id="noSubjects" class="empty-state" style="display:none;">
+      <i class="bi bi-journal-plus empty-state-icon"></i>
+      <h4 class="empty-state-heading">No Subjects Yet</h4>
+      <p class="empty-state-text">Click the "+ Create Subject" button to add your first course and get started.</p>
+    </div> 
+  </div>
+</section>
+
+<section id="studentDash" class="page">
+  <div class="dash-header">
+    <div>
+      <h2 style="margin:0;color:var(--primary)">Student Dashboard</h2>
+      <div class="muted">Join subjects using a subject code and attempt quizzes.</div>
+    </div>
+    <div class="controls">
+      <span class="muted" id="studentNameDisplay"></span>
+      <input id="joinCodeInput" placeholder="Enter Subject Code" style="padding:8px;border-radius:8px;border:1px solid #ddd"/>
+      <button class="btn" id="joinBtn">Join</button>
+      <button class="ghost" id="logoutStudent">Logout</button>
+    </div>
+  </div>
+  <div class="card">
+    <h3 style="margin:0 0 8px 0">Enrolled Subjects</h3>
+    <div id="studentSubjectsGrid" class="subject-grid"></div>
+    <div id="noJoined" class="muted center mt8" style="display:none">You haven't joined any subjects yet.</div>
+  </div>
+</section>
+
+<section id="adminDash" class="page">
+    <div class="dash-header">
+        <div>
+            <h2 style="margin:0;color:var(--primary)">Admin Dashboard</h2>
+            <div class="muted">Manage all users in the system.</div>
+        </div>
+        <div class="controls">
+            <span class="muted" id="adminNameDisplay"></span>
+            <button class="ghost" id="logoutAdmin">Logout</button>
+        </div>
+    </div>
+
+    <div class="stats-grid">
+        <div class="stat-card">
+            <i class="bi bi-person-video3"></i>
+            <div>
+                <div class="stat-value" id="teacherCount">0</div>
+                <div class="stat-label">Total Teachers</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-people-fill"></i>
+            <div>
+                <div class="stat-value" id="studentCount">0</div>
+                <div class="stat-label">Total Students</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="bi bi-journal-bookmark-fill"></i>
+            <div>
+                <div class="stat-value" id="subjectCount">0</div>
+                <div class="stat-label">Total Subjects</div>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <h3 style="margin-top:0">Add New User</h3>
+        <form id="addUserForm">
+            <div class="form-grid">
+                <div><label>Full Name</label><input id="add-user-name" type="text" required></div>
+                <div><label>Email</label><input id="add-user-email" type="email" required></div>
+                <div><label>Password</label><input id="add-user-password" type="password" required></div>
+                <div>
+                    <label>Role</label>
+                    <select id="add-user-role" required>
+                        <option value="teacher">Teacher</option>
+                        <option value="student">Student</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button class="btn" type="submit">+ Add User</button>
+            </div>
+        </form>
+    </div>
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 style="margin:0;">Manage Teachers</h3>
+            <input type="search" id="teacherSearch" class="form-control" style="width: 250px;" placeholder="Search teachers...">
+        </div>
+        <table style="width:100%;">
+            <thead><tr><th>Name</th><th>Email</th><th>Actions</th></tr></thead>
+            <tbody id="teachersTableBody"></tbody>
+        </table>
+        <div class="pagination-controls" id="teacherPagination">
+            </div>
+    </div>
+
+    <div class="card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h3 style="margin:0;">Manage Students</h3>
+            <input type="search" id="studentSearch" class="form-control" style="width: 250px;" placeholder="Search students...">
+        </div>
+        <table style="width:100%;">
+            <thead><tr><th>Name</th><th>Email</th><th>Actions</th></tr></thead>
+            <tbody id="studentsTableBody"></tbody>
+        </table>
+        <div class="pagination-controls" id="studentPagination">
+             </div>
+    </div>
+</section>
+<div id="overlay" style="display:none" class="overlay"></div>
+
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>

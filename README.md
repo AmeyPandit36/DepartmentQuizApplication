@@ -1,4 +1,4 @@
-# Departmental Quiz Application
+# Department Quiz Application
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
@@ -67,7 +67,7 @@ Follow these instructions to get a copy of the project up and running on your lo
 
 3.  **Set up the Database:**
     * Log in to your MySQL server.
-    * Create a new database for the project (e.g., `quiz_app_db`).
+    * Create a new database for the project (e.g., `quiz_app`).
     * Import the database schema from the `database.sql` file (you will need to create this file by exporting your current database structure).
 
 4.  **Configure Environment Variables:**

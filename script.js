@@ -1,7 +1,7 @@
-/* -------------------- Utilities & Persistence -------------------- */
-const API_URL = 'http://localhost:5000/api';
+//  -------------------- Utilities & Persistence --------------------
 
-// const API_URL = 'YOUR_LIVE_BACKEND_URL_WILL_GO_HERE';
+let API_URL = 'http://localhost:5000/api';
+
 
 // The storage helper is still useful for storing the currently logged-in user session.
 const storage = {
@@ -68,15 +68,34 @@ function logout(){
   showPage(pages.landing);
 }
 
-const userBadge = document.getElementById('userBadge');
 function updateHeaderBadge(){
-  userBadge.innerHTML = '';
-  if(currentUser){
-    const span = document.createElement('span');
-    span.className = 'muted';
-    span.innerText = `${currentUser.name || currentUser.email} (${currentUser.role})`;
-    userBadge.appendChild(span);
-  }
+    const userBadge = document.getElementById('userBadge');
+    userBadge.innerHTML = ''; // Clear the area first
+
+    if (currentUser) {
+        // --- This part runs when a user IS LOGGED IN ---
+        const nameSpan = document.createElement('span');
+        nameSpan.className = 'nav-item';
+        nameSpan.style.marginRight = '10px';
+        nameSpan.textContent = `Welcome, ${currentUser.name}`;
+
+        const logoutButton = document.createElement('button');
+        logoutButton.className = 'ghost btn-sm'; // Using your existing button style
+        logoutButton.textContent = 'Logout';
+        logoutButton.onclick = logout; // Attaches the existing logout function
+
+        userBadge.appendChild(nameSpan);
+        userBadge.appendChild(logoutButton);
+
+    } else {
+        // --- This part runs when a user IS LOGGED OUT ---
+        const loginButton = document.createElement('button');
+        loginButton.className = 'btn btn-sm'; // Using your existing button style
+        loginButton.textContent = 'Login';
+        loginButton.onclick = () => showPage(pages.landing); // Takes user to the role selection
+
+        userBadge.appendChild(loginButton);
+    }
 }
 
 /* -------------------- Form & Auth Flow -------------------- */
@@ -87,6 +106,10 @@ document.getElementById('t-back').addEventListener('click', ()=> showPage(pages.
 document.getElementById('s-back').addEventListener('click', ()=> showPage(pages.landing));
 document.getElementById('admin-back').addEventListener('click', () => showPage(pages.landing));
 
+document.getElementById('homeLink').addEventListener('click', (e) => {
+    e.preventDefault(); // Prevent the link from trying to navigate
+    showPage(pages.landing);
+});
 
 async function handleLogin(e, role) {
     e.preventDefault();
@@ -1025,6 +1048,71 @@ function openQuizAttemptModal(subject, quizId) {
     });
 }
 
+
+// Add event listener for the "My Scores" button
+document.getElementById('viewMyScoresBtn').addEventListener('click', () => {
+    openScoreHistoryModal(currentUser.id);
+});
+
+// This function fetches and displays the score history in a modal
+async function openScoreHistoryModal(studentId) {
+    openModal(`<h3>Loading Score History...</h3>`, () => {});
+
+    try {
+        const response = await fetch(`${API_URL}/scores/student/${studentId}`);
+        const scores = await response.json();
+
+        let html = `<h3>My Scores</h3>`;
+
+        if (scores.length === 0) {
+            html += `<p class="muted">You haven't taken any quizzes yet.</p>`;
+        } else {
+            html += `<table style="width:100%; border-collapse: collapse;">
+                        <thead>
+                            <tr>
+                                <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Subject</th>
+                                <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Module</th>
+                                <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Score</th>
+                                <th style="text-align:left; padding:8px; border-bottom:1px solid #eee;">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+            
+            scores.forEach(score => {
+                let moduleName = 'Unknown';
+                const modules = score.modules || [];
+                // Find the module name that contains the quizId
+                for (const module of modules) {
+                    const quiz = (module.quizzes || []).find(q => q.id === score.quizId);
+                    if (quiz) {
+                        moduleName = module.name;
+                        break;
+                    }
+                }
+
+                html += `<tr>
+                            <td style="padding:8px;">${escapeHtml(score.subjectName)}</td>
+                            <td style="padding:8px;">${escapeHtml(moduleName)}</td>
+                            <td style="padding:8px;">${score.score}</td>
+                            <td style="padding:8px;">${new Date(score.submittedAt).toLocaleDateString()}</td>
+                         </tr>`;
+            });
+
+            html += `</tbody></table>`;
+        }
+
+        html += `<div class="form-actions"><button id="closeScores" class="ghost">Close</button></div>`;
+
+        // Update the modal with the final content
+        const modalContent = document.querySelector('.modal');
+        if (modalContent) {
+            modalContent.innerHTML = html;
+            document.getElementById('closeScores').addEventListener('click', closeModal);
+        }
+    } catch (error) {
+        showToast('Could not load score history.', 'error');
+    }
+}
 /* -------------------- Utilities & Init -------------------- */
 function escapeHtml(s){
   if(!s && s!==0) return '';
@@ -1059,3 +1147,64 @@ function closeModal(){
     showPage(pages.landing);
   }
 })();
+
+
+/* -------------------- User Profile Logic -------------------- */
+
+// Opens the profile page and fills it with user data
+function openProfilePage() {
+    if (!currentUser) return;
+    // Add the new page to our pages object if it's not already there
+    if (!pages.profilePage) {
+        pages.profilePage = document.getElementById('profilePage');
+    }
+    document.getElementById('profile-name').textContent = currentUser.name;
+    document.getElementById('profile-email').textContent = currentUser.email;
+    document.getElementById('profile-role').textContent = currentUser.role;
+    showPage(pages.profilePage);
+}
+
+// Event listener for the "Profile" button on the student dash
+document.getElementById('profileBtn').addEventListener('click', openProfilePage);
+
+// Event listener to go back to the correct dashboard from the profile page
+document.getElementById('profile-back-btn').addEventListener('click', () => {
+    if (currentUser.role === 'student') {
+        openStudentDashboard();
+    }
+    // We can add logic for other roles later
+});
+
+// Event listener for the "Change Password" form submission
+document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const currentPassword = document.getElementById('currentPassword').value;
+    const newPassword = document.getElementById('newPassword').value;
+    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+    if (newPassword !== confirmNewPassword) {
+        return showToast('New passwords do not match.', 'error');
+    }
+    if (newPassword.length < 6) {
+        return showToast('New password must be at least 6 characters long.', 'error');
+    }
+
+    try {
+        const response = await fetch(`${API_URL}/users/${currentUser.id}/change-password`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ currentPassword, newPassword })
+        });
+        const result = await response.json();
+
+        if (!response.ok) {
+            throw new Error(result.message);
+        }
+
+        showToast(result.message, 'success');
+        document.getElementById('changePasswordForm').reset();
+
+    } catch (error) {
+        showToast(`Error: ${error.message}`, 'error');
+    }
+});

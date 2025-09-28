@@ -164,6 +164,37 @@ app.post('/api/users/:id/reset-password', async (req, res) => {
     }
 });
 
+// PUT /api/users/:id/change-password - Allow a user to change their password
+app.put('/api/users/:id/change-password', async (req, res) => {
+    const { id } = req.params;
+    const { currentPassword, newPassword } = req.body;
+
+    try {
+        // 1. Get the user's current hashed password from the DB
+        const [rows] = await db.query('SELECT password FROM users WHERE id = ?', [id]);
+        if (rows.length === 0) {
+            return res.status(404).json({ message: 'User not found.' });
+        }
+        const user = rows[0];
+
+        // 2. Compare the provided current password with the stored hash
+        const isMatch = await bcrypt.compare(currentPassword, user.password);
+        if (!isMatch) {
+            return res.status(403).json({ message: 'Incorrect current password.' });
+        }
+
+        // 3. If it matches, hash the new password and update it
+        const saltRounds = 10;
+        const newHashedPassword = await bcrypt.hash(newPassword, saltRounds);
+        await db.query('UPDATE users SET password = ? WHERE id = ?', [newHashedPassword, id]);
+
+        res.status(200).json({ message: 'Password changed successfully!' });
+
+    } catch (error) {
+        res.status(500).json({ message: 'Database server error.' });
+    }
+});
+
 // GET /api/stats - Get dashboard statistics
 app.get('/api/stats', async (req, res) => {
     try {
@@ -181,6 +212,8 @@ app.get('/api/stats', async (req, res) => {
         res.status(500).json({ message: 'Database server error' });
     }
 });
+
+
 
 
 // ===================================

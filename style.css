@@ -374,3 +374,169 @@ textarea {
     max-width: 400px;
     margin: 8px auto 0;
 }
+
+/* this is from date 28 09 2025 */
+
+/* --- Styles for Enhanced Homepage --- */
+.hero-section {
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.hero-section h1 {
+    font-size: 2.8rem;
+    font-weight: 700;
+    color: #333;
+}
+
+.hero-section .lead {
+    max-width: 600px;
+    margin: 16px auto 24px;
+    font-size: 1.1rem;
+    color: var(--muted);
+}
+
+.btn-hero {
+    background-color: var(--primary);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 50px; /* Pill shape */
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-hero:hover {
+    background-color: #1565c0; /* A darker shade of primary */
+}
+
+.role-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    margin-bottom: 16px;
+}
+
+/* --- Styles for New Header (Navbar) & Footer --- */
+
+/* Main Navigation Bar */
+.main-nav {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    padding: 0 24px;
+    position: fixed; /* Fixes it to the top */
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; /* Ensures it's on top of other content */
+}
+
+.nav-container {
+    /* max-width: 1200px; */
+    /* margin: 0 auto; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.nav-brand {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Main Footer */
+.main-footer {
+    background-color: #e9ecef; /* A light grey background */
+    padding: 20px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+    margin-top: 30px;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* IMPORTANT: Add padding to the body to prevent content from hiding behind the new fixed header */
+body {
+    padding-top: 60px; /* This should match the height of your .nav-container */
+}
+
+/* Update .nav-brand to align the logo and text */
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: var(--primary);
+}
+
+/* Style for the new logo image */
+.nav-logo {
+    height: 35px; /* You can adjust this size */
+    width: 35px;
+}
+
+/* --- Styling for the new nav links --- */
+.nav-item {
+    color: var(--muted);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* Add a hover effect for interactivity */
+.nav-item:hover {
+    color: var(--primary);
+    background-color: #f0f3f7;
+}
+
+
+button.btn {
+    background: var(--primary);
+    color: white;
+    padding: 10px 14px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    /* ADDED: For a smooth color change on hover */
+    transition: background-color 0.2s ease;
+}
+
+button.ghost {
+    background: transparent;
+    border: 1px solid #ddd;
+    color: #333;
+    padding: 10px 14px; /* Added for consistency */
+    border-radius: 8px;  /* Added for consistency */
+    cursor: pointer;     /* Added for consistency */
+    /* ADDED: For a smooth effect on hover */
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* --- NEW: Hover effects for interactivity --- */
+
+/* This makes the primary button slightly darker on hover */
+button.btn:hover {
+    background-color: #1565c0; /* A darker shade of your primary blue */
+}
+
+/* This makes the ghost button fill with color on hover */
+button.ghost:hover {
+    background-color: var(--primary);
+    color: white;
+}

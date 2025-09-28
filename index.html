@@ -42,8 +42,8 @@
     width:100%; padding:10px;border:1px solid #ddd;border-radius:8px;font-size:1rem;
   }
   .form-actions{display:flex;gap:10px;align-items:center;margin-top:14px}
-  button.btn{background:var(--primary); color:white; padding:10px 14px;border:none;border-radius:8px;cursor:pointer}
-  button.ghost{background:transparent;border:1px solid #ddd;color:#333}
+  /* button.btn{background:var(--primary); color:white; padding:10px 14px;border:none;border-radius:8px;cursor:pointer} */
+  /* button.ghost{background:transparent;border:1px solid #ddd;color:#333} */
   .link{color:var(--primary);cursor:pointer;text-decoration:underline;font-size:.95rem}
   .dash-header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}
   .controls{display:flex;gap:10px;align-items:center}
@@ -150,32 +150,48 @@
 </head>
 <body>
 
-<header class="app-header" style="max-width:1200px;margin:6px auto 0;padding:0 24px;">
-  <h1>Quiz Application</h1>
-  <div style="margin-left:auto" id="userBadge"></div>
-</header>
+<nav class="main-nav">
+    <div class="nav-container">
+        <div class="nav-brand">
+          <img src="images/quiz.png" alt="App Logo" class="nav-logo">
+          <span>Department Quiz Application</span>
+        </div>
+        <div class="nav-links">
+          <a href="#" id="homeLink" class="nav-item">Home</a>
+          <a href="#" class="nav-item">About</a>
+        <div id="userBadge"></div>
+      </div>
+    </div>
+</nav>
 
 <section id="landing" class="page active">
-  <div class="landing">
-    <div style="text-align:center">
-      <h2 style="margin:8px 0;color:var(--primary)">Welcome to Quiz Application</h2>
-      <p class="subtle">A seamless platform for educators and learners.</p>
+    <div class="hero-section">
+        <h1>The Smart, Simple Quiz Platform</h1>
+        <p class="lead">
+            Create, share, and analyze quizzes with ease. Perfect for any classroom or department.
+        </p>
+        <button id="getStartedBtn" class="btn-hero">Select a Role Below</button>
     </div>
-    <div class="role-row" style="margin-top:6vh">
-      <div class="role-card" id="openTeacher">
-        <h2>Teacher</h2>
-        <p class="muted">Create subjects, build quizzes, and track progress</p>
-      </div>
-      <div class="role-card" id="openAdmin">
-          <h2>Admin</h2>
-          <p class="muted">Manage teachers, students, and system settings</p>
-      </div>
-      <div class="role-card" id="openStudent">
-        <h2>Student</h2>
-        <p class="muted">Join subjects, attempt quizzes, and view scores</p>
-      </div>
+
+    <div class="container">
+        <div class="role-row">
+            <div class="role-card" id="openTeacher">
+                <i class="bi bi-person-video3 role-icon"></i>
+                <h2>Teacher</h2>
+                <p class="muted">Create subjects, build quizzes, and track progress</p>
+            </div>
+            <div class="role-card" id="openAdmin">
+                <i class="bi bi-shield-lock role-icon"></i>
+                <h2>Admin</h2>
+                <p class="muted">Manage teachers, students, and system settings</p>
+            </div>
+            <div class="role-card" id="openStudent">
+                <i class="bi bi-pencil-square role-icon"></i>
+                <h2>Student</h2>
+                <p class="muted">Join subjects, attempt quizzes, and view scores</p>
+            </div>
+        </div>
     </div>
-  </div>
 </section>
 
 <section id="teacherAuth" class="page">
@@ -298,6 +314,8 @@
       <span class="muted" id="studentNameDisplay"></span>
       <input id="joinCodeInput" placeholder="Enter Subject Code" style="padding:8px;border-radius:8px;border:1px solid #ddd"/>
       <button class="btn" id="joinBtn">Join</button>
+      <button class="ghost" id="viewMyScoresBtn">My Scores</button>
+      <button class="ghost" id="profileBtn">Profile</button>
       <button class="ghost" id="logoutStudent">Logout</button>
     </div>
   </div>
@@ -389,7 +407,54 @@
              </div>
     </div>
 </section>
+
+<section id="profilePage" class="page">
+    <div class="dash-header">
+        <div>
+            <h2 style="margin:0;color:var(--primary)">My Profile</h2>
+            <p class="muted">View your details and change your password.</p>
+        </div>
+        <button class="ghost" id="profile-back-btn">Back to Dashboard</button>
+    </div>
+
+    <div class="card">
+        <h3>Account Details</h3>
+        <p><strong>Name:</strong> <span id="profile-name"></span></p>
+        <p><strong>Email:</strong> <span id="profile-email"></span></p>
+        <p><strong>Role:</strong> <span id="profile-role"></span></p>
+    </div>
+
+    <div class="card">
+        <h3>Change Password</h3>
+        <form id="changePasswordForm">
+            <div class="form-grid">
+                <div class="full">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPassword" required>
+                </div>
+                <div class="full">
+                    <label>New Password (min. 6 characters)</label>
+                    <input type="password" id="newPassword" minlength="6" required>
+                </div>
+                <div class="full">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmNewPassword" minlength="6" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn">Update Password</button>
+            </div>
+        </form>
+    </div>
+</section>
+
 <div id="overlay" style="display:none" class="overlay"></div>
+
+<footer class="main-footer">
+    <div class="footer-container">
+        <p>&copy; 2025 Department Quiz Application. All Rights Reserved.</p>
+    </div>
+</footer>
 
 
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>

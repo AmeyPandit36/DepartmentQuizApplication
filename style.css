@@ -1,383 +1,134 @@
-/* ---- General Styles & Variables ---- */
+/* ---- 1. General Styles & Variables ---- */
 :root {
-  --primary-color: #4a90e2; /* A slightly softer, more modern blue */
-  --accent-color: #50e3c2;  /* A fresh, vibrant accent color */
-  --background-color: #f7f9fc;
-  --card-background: #ffffff;
-  --text-color: #333;
-  --muted-text: #888;
-  --border-radius: 12px;
-  --box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    --primary: #1e88e5;
+    --accent: #26a69a;
+    --bg: #f4f7fa;
+    --card: #ffffff;
+    --muted: #6b7280;
 }
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
 }
 
 body {
-  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  background-color: var(--background-color);
-  color: var(--text-color);
-  line-height: 1.6;
+    margin: 0;
+    font-family: Inter, system-ui, "Segoe UI", Roboto, Arial;
+    background: var(--bg);
+    color: #111;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 60px;
 }
 
-/* ---- App Header ---- */
-.app-header {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  padding: 20px 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+#main-content {
+    flex-grow: 1;
 }
 
-.app-header h1 {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--primary-color);
-}
-
-#userBadge {
-  margin-left: auto;
-  font-weight: 500;
-  color: var(--muted-text);
-}
-
-
-/* ---- Page Containers ---- */
+/* ---- 2. Page & Modal Containers ---- */
 .page {
-  display: none;
-  padding: 24px;
-  max-width: 1200px;
-  margin: 0 auto;
+    display: none;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
 .page.active {
-  display: block;
+    display: block;
 }
 
-/* ---- Landing Page ---- */
-.landing {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 70vh;
-  text-align: center;
-}
-
-.landing h2 {
-    font-size: 2.5rem;
-    color: var(--primary-color);
-    margin-bottom: 1rem;
-}
-
-.subtle {
-  font-size: 1.1rem;
-  color: var(--muted-text);
-  max-width: 500px;
-}
-
-.role-row {
-  display: flex;
-  gap: 30px;
-  flex-wrap: wrap;
-  justify-content: center;
-  margin-top: 4vh;
-}
-
-.role-card {
-  background: var(--card-background);
-  border-radius: var(--border-radius);
-  padding: 40px;
-  min-width: 250px;
-  text-align: center;
-  box-shadow: var(--box-shadow);
-  cursor: pointer;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-.role-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
-}
-
-.role-card h2 {
-  margin: 0;
-  color: var(--primary-color);
-  font-size: 1.5rem;
-}
-
-.role-card p {
-  margin-top: 8px;
-  color: var(--muted-text);
-}
-
-
-/* ---- Forms & Cards ---- */
-.card {
-  background: var(--card-background);
-  padding: 30px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow);
-  max-width: 600px;
-  margin: 20px auto;
-}
-
-.form-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 20px;
-}
-
-.form-grid .full {
-  grid-column: 1 / -1;
-}
-
-label {
-  display: block;
-  font-size: 0.9rem;
-  font-weight: 600;
-  margin-bottom: 8px;
-  color: #555;
-}
-
-input[type=text],
-input[type=email],
-input[type=password],
-input[type=tel],
-input[type=number],
-select,
-textarea {
-  width: 100%;
-  padding: 12px 15px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-input:focus, select:focus, textarea:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
-    outline: none;
-}
-
-
-/* ---- Buttons & Links ---- */
-.form-actions {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-  margin-top: 25px;
-}
-
-button.btn {
-  background-color: var(--primary-color);
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s ease;
-}
-
-button.btn:hover {
-  background-color: #3a82d2;
-}
-
-button.ghost {
-  background: transparent;
-  border: 1px solid #ccc;
-  color: #555;
-}
-
-button.ghost:hover {
-    background-color: #f0f0f0;
-}
-
-
-.link {
-  color: var(--primary-color);
-  cursor: pointer;
-  text-decoration: none;
-  font-weight: 500;
-}
-
-.link:hover {
-    text-decoration: underline;
-}
-
-/* ---- Dashboard ---- */
-.dash-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.controls {
-  display: flex;
-  gap: 15px;
-  align-items: center;
-}
-
-.subject-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 25px;
-}
-
-.subject-card {
-  background: var(--card-background);
-  border-left: 5px solid var(--accent-color);
-  border-radius: var(--border-radius);
-  padding: 20px;
-  box-shadow: var(--box-shadow);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.subject-card h3 {
-  color: var(--primary-color);
-  font-size: 1.2rem;
-}
-
-.subject-meta {
-  color: var(--muted-text);
-  font-size: 0.9rem;
-  margin-top: 8px;
-}
-
-.subject-actions {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-
-.btn-sm {
-  padding: 8px 12px;
-  font-size: 0.9rem;
-}
-
-.badge {
-  background-color: rgba(74, 144, 226, 0.1);
-  color: var(--primary-color);
-  padding: 6px 10px;
-  border-radius: 20px;
-  font-weight: 600;
-  font-size: 0.8rem;
-}
-
-
-/* ---- Modal & Quiz Creator ---- */
 .overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  backdrop-filter: blur(5px);
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }
 
 .modal {
-  background: #fff;
-  border-radius: var(--border-radius);
-  padding: 30px;
-  max-width: 800px;
-  width: 95%;
-  max-height: 90vh;
-  overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    max-width: 780px;
+    width: 95%;
+    max-height: 90vh;
+    overflow: auto;
 }
 
-.q-card {
-  background: #f7f9fc;
-  padding: 20px;
-  border-radius: var(--border-radius);
-  border: 1px solid #eef;
-  margin-bottom: 20px;
+/* ---- 3. Navigation & Footer ---- */
+.main-nav {
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    padding: 0 24px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
 }
 
-textarea {
-  min-height: 60px;
-}
-
-.option-group {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 12px;
-  align-items: center;
-  margin-top: 10px;
-}
-
-/* ---- Responsive Design ---- */
-@media (max-width: 720px) {
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
-  .role-card {
-    padding: 30px;
-  }
-  header h1 {
-    font-size: 1.5rem;
-  }
-  .dash-header, .controls {
-    flex-direction: column;
-    align-items: stretch;
-  }
-}
-
-
-.pagination-controls {
+.nav-container {
     display: flex;
-    justify-content: end;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+}
+
+.nav-brand {
+    display: flex;
     align-items: center;
     gap: 10px;
-    margin-top: 16px;
-}
-
-
-/* --- Styles for the new "Empty State" message --- */
-.empty-state {
-    text-align: center;
-    padding: 40px 20px;
-    background-color: #ffffff;
-    border-radius: 12px;
-    border: 2px dashed #e0e0e0;
-    margin-top: 20px;
-}
-
-.empty-state-icon {
-    font-size: 3rem; /* Makes the icon bigger */
-    color: var(--primary);
-    opacity: 0.5;
-    margin-bottom: 16px;
-}
-
-.empty-state-heading {
     font-size: 1.5rem;
-    color: #333;
     font-weight: 600;
+    color: var(--primary);
 }
 
-.empty-state-text {
+.nav-logo {
+    height: 35px;
+    width: 35px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-item {
     color: var(--muted);
-    max-width: 400px;
-    margin: 8px auto 0;
+    text-decoration: none;
+    font-weight: 500;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* this is from date 28 09 2025 */
+.nav-item:hover {
+    color: var(--primary);
+    background-color: #f0f3f7;
+}
 
-/* --- Styles for Enhanced Homepage --- */
+.main-footer {
+    background-color: #e9ecef;
+    padding: 20px 24px;
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.9rem;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* ---- 4. Landing Page ---- */
 .hero-section {
     padding: 60px 20px;
     text-align: center;
@@ -401,7 +152,7 @@ textarea {
     color: white;
     padding: 12px 24px;
     border: none;
-    border-radius: 50px; /* Pill shape */
+    border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
@@ -409,7 +160,30 @@ textarea {
 }
 
 .btn-hero:hover {
-    background-color: #1565c0; /* A darker shade of primary */
+    background-color: #1565c0;
+}
+
+.role-row {
+    display: flex;
+    gap: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.role-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 32px 48px;
+    min-width: 220px;
+    text-align: center;
+    box-shadow: 0 6px 20px rgba(30,30,30,.06);
+    cursor: pointer;
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.role-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 30px rgba(30,30,30,.09);
 }
 
 .role-icon {
@@ -418,93 +192,231 @@ textarea {
     margin-bottom: 16px;
 }
 
-/* --- Styles for New Header (Navbar) & Footer --- */
-
-/* Main Navigation Bar */
-.main-nav {
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    padding: 0 24px;
-    position: fixed; /* Fixes it to the top */
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1000; /* Ensures it's on top of other content */
+.role-card h2 {
+    margin: 0;
+    color: var(--primary);
 }
 
-.nav-container {
-    /* max-width: 1200px; */
-    /* margin: 0 auto; */
+.role-card p {
+    margin: 8px 0 0;
+    color: var(--muted);
+}
+
+/* ---- 5. Dashboards & Cards ---- */
+.dash-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 60px;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 24px;
 }
 
-.nav-brand {
-    font-size: 1.5rem;
-    font-weight: 600;
+.page > .dash-header h2 {
+    font-size: 2.2rem;
+    font-weight: 700;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    /* max-width: 720px; */
+    margin: 14px 0;
+}
+
+/* This is the general card style, now without a max-width */
+/* .card {
+    background: var(--card);
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.06);
+    margin: 14px 0;
+} */
+
+/* This new style is ONLY for the narrow login/auth cards */
+/* .auth-card {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+} */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: var(--card);
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.05);
+}
+
+.stat-card i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    opacity: 0.7;
+}
+
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.subject-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.subject-card {
+    background: #ffffff;
+    border: 1px solid #eef2f6;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.subject-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,.08);
+}
+
+.subject-card h3 {
+    margin: 0 0 8px 0;
     color: var(--primary);
 }
 
-.nav-links {
-    display: flex;
-    align-items: center;
-    gap: 20px;
+.subject-meta {
+    color: var(--muted);
+    font-size: .9rem;
 }
 
-/* Main Footer */
-.main-footer {
-    background-color: #e9ecef; /* A light grey background */
-    padding: 20px 24px;
-    text-align: center;
+.subject-stats {
     color: var(--muted);
     font-size: 0.9rem;
-    margin-top: 30px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #f0f3f7;
 }
 
-.footer-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-/* IMPORTANT: Add padding to the body to prevent content from hiding behind the new fixed header */
-body {
-    padding-top: 60px; /* This should match the height of your .nav-container */
-}
-
-/* Update .nav-brand to align the logo and text */
-.nav-brand {
+.subject-actions {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid #f0f3f7;
     display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.5rem;
+    gap: 8px;
+}
+
+.badge {
+    background: #e6f2ff;
+    color: var(--primary);
+    padding: 6px 8px;
+    border-radius: 8px;
     font-weight: 600;
-    color: var(--primary);
 }
 
-/* Style for the new logo image */
-.nav-logo {
-    height: 35px; /* You can adjust this size */
-    width: 35px;
+.dash-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+    align-items: start;
 }
 
-/* --- Styling for the new nav links --- */
-.nav-item {
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.activity-list li {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.95rem;
+}
+
+.activity-list li:last-child {
+    border-bottom: none;
+}
+
+.activity-list .activity-title {
+    font-weight: 600;
+}
+
+.activity-list .activity-meta {
+    font-size: 0.85rem;
     color: var(--muted);
-    text-decoration: none;
-    font-weight: 500;
-    padding: 8px 12px;
-    border-radius: 6px;
-    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* Add a hover effect for interactivity */
-.nav-item:hover {
-    color: var(--primary);
-    background-color: #f0f3f7;
+/* ---- 6. Forms & Buttons ---- */
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.form-grid .full {
+    grid-column: 1/-1;
+}
+
+label {
+    display: block;
+    font-size: .9rem;
+    margin-bottom: 6px;
+    color: #222;
+}
+
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: box-shadow 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 136, 229, 0.2);
+    border-color: var(--primary);
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-top: 14px;
+}
 
 button.btn {
     background: var(--primary);
@@ -513,7 +425,6 @@ button.btn {
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    /* ADDED: For a smooth color change on hover */
     transition: background-color 0.2s ease;
 }
 
@@ -521,22 +432,430 @@ button.ghost {
     background: transparent;
     border: 1px solid #ddd;
     color: #333;
-    padding: 10px 14px; /* Added for consistency */
-    border-radius: 8px;  /* Added for consistency */
-    cursor: pointer;     /* Added for consistency */
-    /* ADDED: For a smooth effect on hover */
+    padding: 10px 14px;
+    border-radius: 8px;
+    cursor: pointer;
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
-/* --- NEW: Hover effects for interactivity --- */
-
-/* This makes the primary button slightly darker on hover */
 button.btn:hover {
-    background-color: #1565c0; /* A darker shade of your primary blue */
+    background-color: #1565c0;
 }
 
-/* This makes the ghost button fill with color on hover */
 button.ghost:hover {
     background-color: var(--primary);
     color: white;
+}
+
+.btn-sm {
+    padding: 8px 10px;
+    font-size: .9rem;
+    border-radius: 8px;
+}
+
+.link {
+    color: var(--primary);
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: .95rem;
+}
+
+#teacherSearch, #studentSearch {
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 0.95rem;
+}
+
+.pagination-controls {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+    margin-top: 16px;
+    font-size: 0.9rem;
+    color: var(--muted);
+}
+
+.pagination-controls button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* ---- 7. Modules & Quizzes ---- */
+.module-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.module-item {
+    background: #fff;
+    border-radius: 8px;
+    padding: 10px;
+    border: 1px solid #eef2f6;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.module-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.module-table th, .module-table td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #f0f3f7;
+    vertical-align: middle;
+}
+
+.module-table th {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--muted);
+    text-transform: uppercase;
+}
+
+.module-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+}
+
+.q-card {
+    background: #f9fafb;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+    margin-bottom: 12px;
+}
+
+.q-card textarea {
+    min-height: 40px;
+    font-size: 1rem;
+    padding: 6px;
+}
+
+.option-group {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
+    align-items: center;
+    margin-top: 8px;
+}
+
+/* ---- 8. Empty States & Helpers ---- */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    border: 2px dashed #e0e0e0;
+    margin-top: 20px;
+}
+
+.empty-state-icon {
+    font-size: 3rem;
+    color: var(--primary);
+    opacity: 0.5;
+    margin-bottom: 16px;
+}
+
+.empty-state-heading {
+    font-size: 1.5rem;
+    color: #333;
+    font-weight: 600;
+}
+
+.empty-state-text {
+    color: var(--muted);
+    max-width: 400px;
+    margin: 8px auto 0;
+}
+
+.muted { color: var(--muted); }
+.center { text-align: center; }
+.mt8 { margin-top: 8px; }
+
+/* ---- 9. Responsive Overrides ---- */
+@media (max-width: 992px) {
+    .dash-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (max-width: 720px) {
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+    .role-card {
+        padding: 22px;
+    }
+    .nav-brand {
+        font-size: 1.2rem;
+    }
+    .dash-header {
+        text-align: center;
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* Styles for Admin table action buttons */
+.admin-table-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    padding: 8px;
+}
+
+.admin-table-actions button i {
+    margin-right: 5px; /* Adds space between icon and text */
+}
+
+
+/* --- Improved Spacing for Admin Tables --- */
+
+/* Styles the container for the title and search bar */
+.card-header-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 15px; /* Adds space below the search bar */
+    border-bottom: 1px solid #f0f3f7; /* Adds a subtle separator line */
+    margin-bottom: 10px; /* Space between the line and the table */
+}
+
+.card-header-controls h3 {
+    margin: 0;
+}
+
+/* Adds vertical spacing to the table headers */
+.card table th {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+
+
+body {
+    margin: 0;
+    font-family: Inter, system-ui, "Segoe UI", Roboto, Arial;
+    background: var(--bg);
+    color: #111;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-top: 60px;
+    
+    /* ADD THESE LINES */
+    -webkit-user-select: none; /* For Safari */
+    -ms-user-select: none;     /* For Internet Explorer/Edge */
+    user-select: none;         /* Standard syntax */
+}
+
+/* Re-enable text selection specifically for subject codes */
+.badge {
+    -webkit-user-select: text; /* For Safari */
+    -ms-user-select: text;     /* For IE/Edge */
+    user-select: text;         /* Standard */
+}
+
+/* --- Styles for Analytics Modal Leaderboard --- */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 15px;
+    align-items: start;
+}
+
+.chart-container, .leaderboard-container {
+    min-height: 250px;
+}
+
+.leaderboard-container h5 {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--muted);
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 10px;
+    border-radius: 6px;
+    margin-bottom: 5px;
+    background-color: #f7f9fc;
+}
+
+.leaderboard-list li:nth-child(1) {
+    background-color: #fff8e1; /* Gold for 1st place */
+}
+.leaderboard-list li:nth-child(2) {
+    background-color: #f1f3f4; /* Silver for 2nd place */
+}
+.leaderboard-list li:nth-child(3) {
+    background-color: #fbe9e7; /* Bronze for 3rd place */
+}
+
+/* --- Styles for Analytics Modal Layout & Leaderboard --- */
+.analytics-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Creates two equal columns */
+    gap: 24px;
+    margin-top: 20px;
+    align-items: start;
+}
+
+.chart-container {
+    min-height: 250px;
+}
+
+.leaderboard-container h5 {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--muted);
+}
+
+.leaderboard-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.leaderboard-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin-bottom: 6px;
+    background-color: #f7f9fc;
+    font-size: 0.9rem;
+}
+
+/* Special styling for top 3 */
+.leaderboard-list li:nth-child(1) { background-color: #fff8e1; font-weight: 600; }
+.leaderboard-list li:nth-child(2) { background-color: #f1f3f4; }
+.leaderboard-list li:nth-child(3) { background-color: #fbe9e7; }
+
+.fib-question {
+    font-size: 1.1rem;
+}
+.fib-input {
+    border: none;
+    border-bottom: 2px solid var(--primary);
+    background: transparent;
+    text-align: center;
+    font-size: 1.1rem;
+    width: 150px;
+    margin: 0 5px;
+}
+.fib-input:focus {
+    outline: none;
+}
+
+/* --- Animation Styles --- */
+.fade-in-element {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.fade-in-element.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* --- Bolder UI Styles --- */
+
+/* Give the hero section a subtle gradient background */
+.hero-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f7f9fc 100%);
+    border-radius: var(--border-radius);
+    padding: 80px 40px;
+    margin: 24px 0;
+}
+
+/* Make stat card icons more vibrant */
+.stat-card i {
+    font-size: 2.5rem;
+    color: var(--primary);
+    opacity: 1.0; /* Make icon fully opaque */
+    background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(74, 144, 226, 0));
+    padding: 15px;
+    border-radius: 50%;
+}
+
+/* Add a gradient to the primary button */
+button.btn {
+    background-image: linear-gradient(45deg, #4a90e2 0%, #2b7de9 100%);
+    box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+    transition: all 0.3s ease;
+}
+
+button.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+}
+
+body {
+    /* ... your other body styles ... */
+    font-family: 'Poppins', sans-serif; /* Use the new font */
+}
+
+/* --- Styles for Large Subject Icons --- */
+.subject-card-icon {
+    font-size: 3rem;
+    margin-bottom: 15px;
+    display: block; /* Make it a block element to take up its own line */
+}
+
+/* --- Styles for the 'More Options' Dropdown --- */
+.card-actions-menu {
+    position: relative; /* This is the container for the button and menu */
+}
+
+.dropdown-menu {
+    display: none; /* Hidden by default */
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background-color: white;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    padding: 8px 0;
+    z-index: 10;
+    min-width: 160px;
+    list-style: none;
+    margin: 0;
+}
+
+.dropdown-menu.show {
+    display: block; /* This class will be toggled by JavaScript */
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 16px;
+    color: #594040;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #646d79;
+}
+
+.dropdown-item i {
+    color: var(--muted);
 }

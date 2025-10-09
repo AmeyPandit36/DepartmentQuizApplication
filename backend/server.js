@@ -221,11 +221,41 @@ app.get('/api/stats', async (req, res) => {
 // ===================================
 
 // GET /api/subjects/:teacherId - Get all subjects for a specific teacher
+// GET /api/subjects/:teacherId - Get all subjects for a teacher with stats
 app.get('/api/subjects/:teacherId', async (req, res) => {
     const { teacherId } = req.params;
     try {
+        // 1. Get all subjects for the teacher
         const [subjects] = await db.query('SELECT * FROM subjects WHERE teacherId = ?', [teacherId]);
-        res.json(subjects);
+        if (subjects.length === 0) {
+            return res.json([]);
+        }
+
+        // 2. Get all subject IDs to fetch scores in a single efficient query
+        const subjectIds = subjects.map(s => s.id);
+        const scoreSql = `
+            SELECT subjectId, COUNT(*) as attemptCount 
+            FROM scores 
+            WHERE subjectId IN (?) 
+            GROUP BY subjectId
+        `;
+        const [scoreRows] = await db.query(scoreSql, [subjectIds]);
+        
+        // 3. Combine the data and send it back
+        const subjectsWithStats = subjects.map(subject => {
+            const scoreInfo = scoreRows.find(sr => sr.subjectId === subject.id);
+            const modules = subject.modules || [];
+            // Calculate total quizzes from the modules data
+            const quizCount = modules.reduce((acc, mod) => acc + (mod.quizzes ? mod.quizzes.length : 0), 0);
+
+            return {
+                ...subject,
+                attemptCount: scoreInfo ? scoreInfo.attemptCount : 0,
+                quizCount: quizCount
+            };
+        });
+
+        res.json(subjectsWithStats);
     } catch (error) {
         res.status(500).json({ message: 'Database server error' });
     }
@@ -276,6 +306,24 @@ app.delete('/api/subjects/:id', async (req, res) => {
     try {
         await db.query('DELETE FROM subjects WHERE id = ?', [id]);
         res.status(200).json({ message: 'Subject deleted successfully.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Database server error' });
+    }
+});
+
+// GET /api/subjects/:subjectId/students - Get all students enrolled in a subject
+app.get('/api/subjects/:subjectId/students', async (req, res) => {
+    const { subjectId } = req.params;
+    try {
+        // This query finds all students where the 'joinedSubjects' JSON array contains the subjectId
+        const sql = `
+            SELECT id, name, email, roll 
+            FROM users 
+            WHERE role = 'student' AND JSON_CONTAINS(joinedSubjects, CAST(? AS JSON), '$')
+        `;
+        // We need to wrap the subjectId in quotes for the JSON_CONTAINS function
+        const [students] = await db.query(sql, [`"${subjectId}"`]);
+        res.json(students);
     } catch (error) {
         res.status(500).json({ message: 'Database server error' });
     }
@@ -388,6 +436,78 @@ app.get('/api/students/:studentId/subjects', async (req, res) => {
         `;
         const [subjects] = await db.query(sql, [subjectIds]);
         res.json(subjects);
+    } catch (error) {
+        res.status(500).json({ message: 'Database server error' });
+    }
+});
+
+// GET /api/students/:studentId/activity - Get a student's most recent activity
+app.get('/api/students/:studentId/activity', async (req, res) => {
+    const { studentId } = req.params;
+    try {
+        // Get the last 5 quiz submissions for the student
+        const sql = `
+            SELECT sc.score, sc.submittedAt, sc.quizId, s.name as subjectName, s.modules
+            FROM scores sc
+            JOIN subjects s ON sc.subjectId = s.id
+            WHERE sc.studentId = ?
+            ORDER BY sc.submittedAt DESC
+            LIMIT 5
+        `;
+        const [activities] = await db.query(sql, [studentId]);
+        res.json(activities);
+    } catch (error) {
+        res.status(500).json({ message: 'Database server error' });
+    }
+});
+
+// GET /api/students/:studentId/stats - Get performance stats for a student
+app.get('/api/students/:studentId/stats', async (req, res) => {
+    const { studentId } = req.params;
+    try {
+        const sql = `
+            SELECT sc.score, s.name as subjectName 
+            FROM scores sc
+            JOIN subjects s ON sc.subjectId = s.id
+            WHERE sc.studentId = ?
+        `;
+        const [scores] = await db.query(sql, [studentId]);
+
+        if (scores.length === 0) {
+            return res.json({
+                averageScore: 0,
+                quizzesTaken: 0,
+                bestSubject: 'N/A'
+            });
+        }
+
+        // Calculate total quizzes and average score
+        const quizzesTaken = scores.length;
+        // Assuming each quiz is out of 10 (5 questions * 2 points)
+        const totalScore = scores.reduce((acc, score) => acc + score.score, 0);
+        const averageScore = Math.round((totalScore / (quizzesTaken * 10)) * 100);
+
+        // Calculate the best subject
+        const scoresBySubject = {};
+        scores.forEach(score => {
+            if (!scoresBySubject[score.subjectName]) {
+                scoresBySubject[score.subjectName] = { total: 0, count: 0 };
+            }
+            scoresBySubject[score.subjectName].total += score.score;
+            scoresBySubject[score.subjectName].count += 1;
+        });
+
+        let bestSubject = 'N/A';
+        let highestAvg = 0;
+        for (const subject in scoresBySubject) {
+            const avg = scoresBySubject[subject].total / scoresBySubject[subject].count;
+            if (avg > highestAvg) {
+                highestAvg = avg;
+                bestSubject = subject;
+            }
+        }
+
+        res.json({ averageScore, quizzesTaken, bestSubject });
     } catch (error) {
         res.status(500).json({ message: 'Database server error' });
     }
@@ -533,6 +653,70 @@ app.put('/api/subjects/:subjectId/modules/:moduleId/quizzes/:quizId/toggle', asy
         
         await db.query('UPDATE subjects SET modules = ? WHERE id = ?', [JSON.stringify(modules), subjectId]);
         res.status(200).json({ message: 'Quiz status updated.' });
+    } catch (error) {
+        res.status(500).json({ message: 'Database server error' });
+    }
+});
+
+// GET /api/scores/student/:studentId - Get all scores for a specific student
+app.get('/api/scores/student/:studentId', async (req, res) => {
+    const { studentId } = req.params;
+    try {
+        // We join scores with subjects to get the subject name and module data
+        const sql = `
+            SELECT 
+                sc.score, 
+                sc.submittedAt, 
+                sc.quizId,
+                s.name AS subjectName,
+                s.modules
+            FROM scores sc
+            JOIN subjects s ON sc.subjectId = s.id
+            WHERE sc.studentId = ?
+            ORDER BY sc.submittedAt DESC
+        `;
+        const [scores] = await db.query(sql, [studentId]);
+        res.json(scores);
+    } catch (error) {
+        res.status(500).json({ message: 'Database server error' });
+    }
+});
+
+// GET /api/reports/module/:moduleId - Get all data for a single module report
+app.get('/api/reports/module/:moduleId', async (req, res) => {
+    const { moduleId } = req.params;
+    try {
+        // 1. Find which subject this module belongs to
+        const subjectSql = "SELECT * FROM subjects WHERE JSON_SEARCH(modules, 'one', ?, NULL, '$[*].id') IS NOT NULL";
+        const [subjectRows] = await db.query(subjectSql, [moduleId]);
+        if (subjectRows.length === 0) {
+            return res.status(404).json({ message: 'Module not found in any subject.' });
+        }
+        const subject = subjectRows[0];
+        
+        // 2. Extract the specific module from the JSON
+        const module = subject.modules.find(m => m.id === moduleId);
+        if (!module) {
+            return res.status(404).json({ message: 'Module data could not be extracted.' });
+        }
+        
+        // 3. Get the IDs of all quizzes within this module
+        const quizIds = (module.quizzes || []).map(q => q.id);
+        if (quizIds.length === 0) {
+            return res.json({ subject, module, scores: [] }); // Return if no quizzes
+        }
+
+        // 4. Fetch all scores for those specific quizzes
+        const scoresSql = `
+            SELECT sc.score, sc.submittedAt, sc.quizId, u.name AS studentName, u.roll AS studentRoll
+            FROM scores sc JOIN users u ON sc.studentId = u.id
+            WHERE sc.quizId IN (?) ORDER BY sc.submittedAt DESC
+        `;
+        const [scores] = await db.query(scoresSql, [quizIds]);
+
+        // 5. Send all the data back
+        res.json({ subject, module, scores });
+
     } catch (error) {
         res.status(500).json({ message: 'Database server error' });
     }
